@@ -18,5 +18,51 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserLexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParser.tokens">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserLexer.tokens">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseVisitor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserLexer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserParser.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserVisitor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
