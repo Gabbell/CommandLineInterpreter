@@ -74,12 +74,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Desktop\antlr4-cpp-runtime-vs2015\antlr4-runtime;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)antlr4-runtime;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Simon\Desktop\antlr4-cpp-runtime-vs2015\lib\vs-2015\x86\Release DLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\vs-2015\x86\Release DLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>antlr4-runtime.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)lib\vs-2015\x86\Release DLL\antlr4-runtime.dll"  "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -95,14 +98,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Simon\Desktop\antlr4-cpp-runtime-vs2015\antlr4-runtime;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)antlr4-runtime;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Simon\Desktop\antlr4-cpp-runtime-vs2015\lib\vs-2015\x86\Release DLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\vs-2015\x86\Release DLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>antlr4-runtime.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)lib\vs-2015\x86\Release DLL\antlr4-runtime.dll"  "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -118,25 +124,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseListener.cpp" />
-    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseVisitor.cpp" />
-    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserLexer.cpp" />
-    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserListener.cpp" />
-    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserParser.cpp" />
-    <ClCompile Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserVisitor.cpp" />
+    <ClCompile Include="cliParserBaseListener.cpp" />
+    <ClCompile Include="cliParserBaseVisitor.cpp" />
+    <ClCompile Include="cliParserLexer.cpp" />
+    <ClCompile Include="cliParserListener.cpp" />
+    <ClCompile Include="cliParserParser.cpp" />
+    <ClCompile Include="cliParserVisitor.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParser.tokens" />
-    <None Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserLexer.tokens" />
+    <None Include="cliParser.tokens" />
+    <None Include="cliParserLexer.tokens" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseListener.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserBaseVisitor.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserLexer.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserListener.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserParser.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\Lab-Prog-Assignment-1-Tuorial-material\LabAssignment1-Tuorial3\target\generated-sources\antlr4_Cpp\cliParserVisitor.h" />
+    <ClInclude Include="cliParserBaseListener.h" />
+    <ClInclude Include="cliParserBaseVisitor.h" />
+    <ClInclude Include="cliParserLexer.h" />
+    <ClInclude Include="cliParserListener.h" />
+    <ClInclude Include="cliParserParser.h" />
+    <ClInclude Include="cliParserVisitor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
