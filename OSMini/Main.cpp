@@ -1,11 +1,9 @@
 #include <iostream>
 #include <string>
 
+#include "CommandLineInterpreter.h"
+
 int main() {
-	std::cout << "hello!" << std::endl;
-
-	std::string wait;
-	std::cin >> wait;
-
-	return 0;
+	CLI cli;
+	return cli.run();
 }

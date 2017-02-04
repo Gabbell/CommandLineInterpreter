@@ -130,6 +130,7 @@
     <ClCompile Include="cliParserListener.cpp" />
     <ClCompile Include="cliParserParser.cpp" />
     <ClCompile Include="cliParserVisitor.cpp" />
+    <ClCompile Include="CommandLineInterpreter.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +144,7 @@
     <ClInclude Include="cliParserListener.h" />
     <ClInclude Include="cliParserParser.h" />
     <ClInclude Include="cliParserVisitor.h" />
+    <ClInclude Include="CommandLineInterpreter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
