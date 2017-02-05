@@ -38,8 +38,6 @@ int CommandLineInterpreter::run() {
 		string input;
 		getline(cin, input);
 
-		cout << "INPUT STRING WAS: " << input << endl;
-
 		ANTLRInputStream stream(input);
 		cliParserLexer lexer(&stream);
 		CommonTokenStream tokens(&lexer);
@@ -49,7 +47,12 @@ int CommandLineInterpreter::run() {
 		tree::ParseTree* tree = parser.blockstat();
 
 		Visitor visitor(this);
-		antlrcpp::Any result = visitor.visit(tree);
+
+		antlrcpp::Any finalResult = visitor.visit(tree);
+
+		if (finalResult.isNotNull() && finalResult.is<int>()) {
+			cout << ((int)finalResult) << endl;
+		}
 
 		// Temp exit
 		if (input == "exit") {

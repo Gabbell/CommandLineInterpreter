@@ -15,6 +15,10 @@ public:
 	~Visitor();
 
 	virtual antlrcpp::Any visitCommand(cliParserParser::CommandContext * ctx);
+	virtual antlrcpp::Any visitExprM(cliParserParser::ExprMContext *ctx);
+	virtual antlrcpp::Any visitTerm(cliParserParser::TermContext *ctx);
+	virtual antlrcpp::Any visitFactor(cliParserParser::FactorContext *ctx);
+
 };
 
 #endif
