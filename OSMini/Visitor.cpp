@@ -26,6 +26,7 @@ antlrcpp::Any Visitor::visitExprM(cliParserParser::ExprMContext *ctx) {
 	int termIndex = 1;
 	int sum = visitTerm(ctx->term(0));
 
+
 	for (int i = 0; i < expression.length(); i++) {
 		char character = expression[i];
 		switch (character) {
@@ -68,4 +69,44 @@ antlrcpp::Any Visitor::visitTerm(cliParserParser::TermContext *ctx) {
 antlrcpp::Any Visitor::visitFactor(cliParserParser::FactorContext *ctx) {
 	int value = stoi(ctx->NUMBER()->getText());
 	return antlrcpp::Any(value);
+}
+
+
+antlrcpp::Any Visitor::visitString(cliParserParser::StringContext *ctx) {
+	string value = ctx->getText();
+	return value;
+}
+
+antlrcpp::Any Visitor::visitComparS(cliParserParser::ComparSContext *ctx) {
+	string expr1 = visitString(ctx->string(0));
+	string expr2 = visitString(ctx->string(1));
+
+	if (expr1 == expr2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+antlrcpp::Any Visitor::visitComparM(cliParserParser::ComparMContext *ctx) {
+	int expr1 = visitExprM(ctx->exprM(0));
+	int expr2 = visitExprM(ctx->exprM(1));
+
+	if (expr1 == expr2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
+	string expression = ctx->getText();
+	if (expression == "TRUE") {
+		return true;
+	}
+	else if (expression == "FALSE") {
+		return false;
+	}
 }
