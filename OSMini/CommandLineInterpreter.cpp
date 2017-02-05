@@ -47,8 +47,10 @@ int CommandLineInterpreter::run() {
 		CommonTokenStream tokens(&lexer);
 		cliParserParser parser(&tokens);
 
-		Ref<tree::ParseTree> tree = Ref<tree::ParseTree>(parser.blockstat());
-		visitor.visit(tree.get());
+		//Ref<tree::ParseTree> tree = Ref<tree::ParseTree>(parser.blockstat());
+		tree::ParseTree* tree = parser.blockstat();
+
+		antlrcpp::Any result = visitor.visit(tree);
 
 		// Temp exit
 		if (input == "exit") {
