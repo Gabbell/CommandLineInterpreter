@@ -32,8 +32,6 @@ int CommandLineInterpreter::run() {
 
 	cout << "OSMini by Simon Bourque and Gabriel Belanger" << endl << endl;
 
-	Visitor visitor(this);
-
 	while (!closed) {
 		cout << currentDirectory << ">";
 		
@@ -50,6 +48,7 @@ int CommandLineInterpreter::run() {
 		//Ref<tree::ParseTree> tree = Ref<tree::ParseTree>(parser.blockstat());
 		tree::ParseTree* tree = parser.blockstat();
 
+		Visitor visitor(this);
 		antlrcpp::Any result = visitor.visit(tree);
 
 		// Temp exit
