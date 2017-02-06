@@ -67,8 +67,18 @@ antlrcpp::Any Visitor::visitTerm(cliParserParser::TermContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitFactor(cliParserParser::FactorContext *ctx) {
-	int value = stoi(ctx->NUMBER()->getText());
-	return antlrcpp::Any(value);
+	string expression = ctx->NUMBER()->getText();
+	bool isNumber = true;
+	for (int i = 0; i < expression.length(); i++) {
+		if (!isdigit(expression[i])) {
+			isNumber = false;
+		}
+	}
+	if (isNumber) {
+		int value = stoi(ctx->NUMBER()->getText());
+		return antlrcpp::Any(value);
+	}
+	return visitChildren(ctx);
 }
 
 
@@ -82,9 +92,11 @@ antlrcpp::Any Visitor::visitComparS(cliParserParser::ComparSContext *ctx) {
 	string expr2 = visitString(ctx->string(1));
 
 	if (expr1 == expr2) {
+		cout << "String equal" << endl;
 		return true;
 	}
 	else {
+		cout << "String not equal" << endl;
 		return false;
 	}
 }
@@ -94,11 +106,35 @@ antlrcpp::Any Visitor::visitComparM(cliParserParser::ComparMContext *ctx) {
 	int expr2 = visitExprM(ctx->exprM(1));
 
 	if (expr1 == expr2) {
+		cout << "Expression equal" << endl;
 		return true;
 	}
 	else {
+		cout << "Expression not equal" << endl;
 		return false;
 	}
+}
+
+antlrcpp::Any Visitor::visitCompar(cliParserParser::ComparContext *ctx) {
+	int doublequotes = 0;
+	string expression = ctx->getText();
+	for (int i = 0; i < expression.length(); i++) {
+		char currentchar = expression[i];
+		if (currentchar == '"') {
+			doublequotes++;
+		}
+	}
+
+	if (doublequotes % 2 == 0 && doublequotes > 3) {
+		cout << "going through comparS" << endl;
+		return visitComparS(ctx->comparS());
+	}
+	else if(doublequotes == 0) {
+		cout << "going through comparM" << endl;
+		return visitComparM(ctx->comparM());
+	}
+
+	return visitChildren(ctx);
 }
 
 antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
@@ -109,4 +145,6 @@ antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
 	else if (expression == "FALSE") {
 		return false;
 	}
+
+	return visitChildren(ctx);
 }
