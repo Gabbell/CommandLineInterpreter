@@ -10,14 +10,23 @@ Visitor::Visitor(CommandLineInterpreter* cli) : cli(cli)
 {
 }
 
-
 Visitor::~Visitor()
 {
 }
 
-
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 	cout << "COMMAND EXECUTED" << endl;
+	string toprint = ctx->getText();
+	toprint = toprint.substr(4, toprint.length() - 1);
+	return toprint;
+}
+
+antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
+
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {
 	return visitChildren(ctx);
 }
 
@@ -133,8 +142,6 @@ antlrcpp::Any Visitor::visitCompar(cliParserParser::ComparContext *ctx) {
 		cout << "going through comparM" << endl;
 		return visitComparM(ctx->comparM());
 	}
-
-	return visitChildren(ctx);
 }
 
 antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
@@ -145,6 +152,4 @@ antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
 	else if (expression == "FALSE") {
 		return false;
 	}
-
-	return visitChildren(ctx);
 }

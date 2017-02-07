@@ -23,6 +23,8 @@ public:
 	virtual antlrcpp::Any visitFactor(cliParserParser::FactorContext *ctx);
 	virtual antlrcpp::Any visitBool_(cliParserParser::Bool_Context *ctx);
 	virtual antlrcpp::Any visitString(cliParserParser::StringContext *ctx);
+	virtual antlrcpp::Any visitLogicops(cliParserParser::LogicopsContext *ctx);
+	virtual antlrcpp::Any visitVarid(cliParserParser::VaridContext *ctx);
 
 };
 
