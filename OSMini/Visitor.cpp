@@ -39,7 +39,15 @@ antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {
-	return visitChildren(ctx);
+	// Assume it is an AND
+	char op = 'a';
+
+	// If OR() does not return null then it was actually an OR
+	if (ctx->OR()) {
+		op = 'o';
+	}
+
+	return op;
 }
 
 antlrcpp::Any Visitor::visitExprM(cliParserParser::ExprMContext *ctx) {
