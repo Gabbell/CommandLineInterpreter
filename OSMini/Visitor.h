@@ -25,6 +25,7 @@ public:
 	virtual antlrcpp::Any visitString(cliParserParser::StringContext *ctx);
 	virtual antlrcpp::Any visitLogicops(cliParserParser::LogicopsContext *ctx);
 	virtual antlrcpp::Any visitVarid(cliParserParser::VaridContext *ctx);
+	virtual antlrcpp::Any visitAssgnmnt(cliParserParser::AssgnmntContext *ctx);
 
 };
 

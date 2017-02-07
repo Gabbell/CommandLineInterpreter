@@ -22,8 +22,20 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
+	string varId;
+	for (tree::TerminalNode* character : ctx->LETTER()) {
+		varId.append(character->getText());
+	}
+	return varId;
+}
 
-	return visitChildren(ctx);
+antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
+	string varId = visitVarid(ctx->varid());
+	antlrcpp::Any stat = visitStat(ctx->stat());
+
+	cli->addVariable(varId, stat);
+
+	return antlrcpp::Any();
 }
 
 antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {

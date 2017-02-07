@@ -4,7 +4,6 @@
 
 #include "cliParserLexer.h"
 #include "cliParserParser.h"
-#include "antlr4-runtime.h"
 
 #include "Visitor.h"
 
@@ -65,4 +64,12 @@ int CommandLineInterpreter::run() {
 
 void CommandLineInterpreter::close() {
 	closed = true;
+}
+
+void CommandLineInterpreter::addVariable(const std::string& varId, antlrcpp::Any value) {
+	variables[varId] = value;
+}
+
+antlrcpp::Any CommandLineInterpreter::getVariable(std::string& varId) const {
+	return variables.at(varId);
 }
