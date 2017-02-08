@@ -7,6 +7,8 @@
 
 #include "Visitor.h"
 
+#include "Commands.h"
+
 #include <windows.h>
 
 using namespace std;
@@ -20,6 +22,8 @@ CommandLineInterpreter::CommandLineInterpreter() : closed(false)
 
 	currentDirectory = string(buffer);
 
+	// Map commands
+	cmds["echo"] = &echo;
 }
 
 
@@ -72,4 +76,8 @@ void CommandLineInterpreter::addVariable(const std::string& varId, antlrcpp::Any
 
 antlrcpp::Any CommandLineInterpreter::getVariable(std::string& varId) const {
 	return variables.at(varId);
+}
+
+int CommandLineInterpreter::executeCommand(const std::string& cmd, const vector<std::string>& args) {
+	return cmds.at(cmd)(args);
 }

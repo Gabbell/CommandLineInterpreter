@@ -131,6 +131,7 @@
     <ClCompile Include="cliParserParser.cpp" />
     <ClCompile Include="cliParserVisitor.cpp" />
     <ClCompile Include="CommandLineInterpreter.cpp" />
+    <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Visitor.cpp" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="cliParserParser.h" />
     <ClInclude Include="cliParserVisitor.h" />
     <ClInclude Include="CommandLineInterpreter.h" />
+    <ClInclude Include="Commands.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

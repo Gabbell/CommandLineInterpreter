@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include "antlr4-runtime.h"
 
@@ -14,6 +15,7 @@ private:
 	bool closed;
 	std::string currentDirectory;
 	std::map<std::string, antlrcpp::Any> variables;
+	std::map<std::string, int(*)(const std::vector<std::string>& args)> cmds;
 public:
 	CommandLineInterpreter();
 	~CommandLineInterpreter();
@@ -23,6 +25,8 @@ public:
 
 	void addVariable(const std::string& varId, antlrcpp::Any value);
 	antlrcpp::Any getVariable(std::string& varId) const;
+	
+	int executeCommand(const std::string& cmd, const std::vector<std::string>& args);
 };
 #endif
 

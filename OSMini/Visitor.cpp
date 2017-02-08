@@ -15,10 +15,14 @@ Visitor::~Visitor()
 }
 
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
-	cout << "COMMAND EXECUTED" << endl;
-	string toprint = ctx->getText();
-	toprint = toprint.substr(4, toprint.length() - 1);
-	return toprint;
+	if (ctx->ECHO()) {
+		vector<string> args;
+		for (cliParserParser::VaridContext* varid : ctx->varid()) {
+			args.push_back(visitVarid(varid));
+		}
+		cli->executeCommand("echo", args);
+	}
+	return antlrcpp::Any();
 }
 
 antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
