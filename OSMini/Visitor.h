@@ -29,7 +29,7 @@ public:
 	virtual antlrcpp::Any visitBlockstat(cliParserParser::BlockstatContext *ctx);
 	virtual antlrcpp::Any visitStat(cliParserParser::StatContext *ctx);
 	virtual antlrcpp::Any visitIfstat(cliParserParser::IfstatContext *ctx);
-
+	virtual antlrcpp::Any visitWhilestat(cliParserParser::WhilestatContext *ctx);
 };
 
 #endif

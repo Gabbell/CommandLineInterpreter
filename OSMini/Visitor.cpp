@@ -172,8 +172,6 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitIfstat(cliParserParser::IfstatContext *ctx) {
-	int comparIndex = 0;
-	int logicopsIndex = 0;
 	bool value = visitCompar(ctx->compar(0));
 	for (int i = 0; i < ctx->logicops().size; i++) {
 		char logicop = visitLogicops(ctx->logicops(i++));
@@ -189,6 +187,22 @@ antlrcpp::Any Visitor::visitIfstat(cliParserParser::IfstatContext *ctx) {
 	}
 	else {
 		return visitBlockstat(ctx->blockstat(1));
+	}
+}
+
+antlrcpp::Any Visitor::visitWhilestat(cliParserParser::WhilestatContext *ctx) {
+	bool value = visitCompar(ctx->compar(0));
+	for (int i = 0; i < ctx->logicops().size; i++) {
+		char logicop = visitLogicops(ctx->logicops(i++));
+		switch (logicop) {
+		case 'a':
+			value = value && visitCompar(ctx->compar(i++));
+		case 'o':
+			value = value || visitCompar(ctx->compar(i++));
+		}
+	}
+	while (value) {
+		return visitBlockstat(ctx->blockstat());
 	}
 }
 
