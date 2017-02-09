@@ -185,7 +185,17 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 		return visitAssgnmnt(ctx->assgnmnt());
 	}
 	else if (ctx->compar().size() > 0) {
-		//do the thing
+		bool value = (bool)visitCompar(ctx->compar(0));
+		for (int i = 0; i < ctx->logicops().size(); i++) {
+			char logicop = (char)visitLogicops(ctx->logicops(i++));
+			switch (logicop) {
+			case 'a':
+				value = value && (bool)visitCompar(ctx->compar(i++));
+			case 'o':
+				value = value || (bool)visitCompar(ctx->compar(i++));
+			}
+		}
+		return value;
 	}
 	else if (ctx->exprM()) {
 		return visitExprM(ctx->exprM());
@@ -239,7 +249,6 @@ antlrcpp::Any Visitor::visitWhilestat(cliParserParser::WhilestatContext *ctx) {
 	while (value) {
 		return visitBlockstat(ctx->blockstat());
 	}
-	return NULL;
 }
 
 antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
