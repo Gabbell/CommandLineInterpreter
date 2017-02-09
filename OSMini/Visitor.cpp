@@ -15,22 +15,22 @@ Visitor::~Visitor()
 }
 
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
-	if (ctx->ECHO()) {
+	if (ctx->ECHO()) { //user is running echo command
 		vector<string> args;
 		for (cliParserParser::VaridContext* varid : ctx->varid()) {
 			args.push_back(visitVarid(varid));
 		}
+		cout << "user is running echo" << endl;
 		cli->executeCommand("echo", args);
+	}
+	else { //user is trying to run an executable
+		cout << "user is running an executable" << endl;
 	}
 	return antlrcpp::Any();
 }
 
 antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
-	string varId;
-	for (tree::TerminalNode* character : ctx->LETTER()) {
-		varId.append(character->getText());
-	}
-	return varId;
+	return ctx->getText();
 }
 
 antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
@@ -165,6 +165,30 @@ antlrcpp::Any Visitor::visitCompar(cliParserParser::ComparContext *ctx) {
 	else if(doublequotes == 0) {
 		cout << "going through comparM" << endl;
 		return visitComparM(ctx->comparM());
+	}
+}
+
+antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
+}
+
+antlrcpp::Any Visitor::visitIfstat(cliParserParser::IfstatContext *ctx) {
+	int comparIndex = 0;
+	int logicopsIndex = 0;
+	bool value = visitCompar(ctx->compar(0));
+	for (int i = 0; i < ctx->logicops().size; i++) {
+		char logicop = visitLogicops(ctx->logicops(i++));
+		switch (logicop) {
+			case 'a':
+				value = value && visitCompar(ctx->compar(i++));
+			case 'o':
+				value = value || visitCompar(ctx->compar(i++));
+		}
+	}
+	if (value) {
+		return visitBlockstat(ctx->blockstat(0));
+	}
+	else {
+		return visitBlockstat(ctx->blockstat(1));
 	}
 }
 
