@@ -41,6 +41,11 @@ int CommandLineInterpreter::run() {
 		string input;
 		getline(cin, input);
 
+		// Temp exit
+		if (input == "exit") {
+			break;
+		}
+
 		ANTLRInputStream stream(input);
 		cliParserLexer lexer(&stream);
 		CommonTokenStream tokens(&lexer);
@@ -57,10 +62,6 @@ int CommandLineInterpreter::run() {
 			cout << ((int)finalResult) << endl;
 		}
 
-		// Temp exit
-		if (input == "exit") {
-			break;
-		}
 	}
 
 	return 0;

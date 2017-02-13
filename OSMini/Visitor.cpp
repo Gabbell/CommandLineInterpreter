@@ -15,22 +15,22 @@ Visitor::~Visitor()
 }
 
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
-	if (ctx->ECHO()) { //user is running echo command
+	if (ctx->ECHO()) { //user is running known command (echo)
 		vector<string> args;
 		for (cliParserParser::VaridContext* varid : ctx->varid()) {
 			args.push_back(visitVarid(varid));
 		}
-		cout << "user is running echo" << endl;
 		cli->executeCommand("echo", args);
 	}
 	else { //user is trying to run an executable
 		if (ctx->BACKGrnd()) {
+			cout << "user running executable in background" << endl;
 			//run command in background
 		}
 		else {
+			cout << "user is running an executable" << endl;
 			//run command in foreground
 		}
-		cout << "user is running an executable" << endl;
 	}
 	return antlrcpp::Any();
 }
@@ -45,7 +45,7 @@ antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
 
 	cli->addVariable(varId, stat);
 
-	return NULL;
+	return antlrcpp::Any();
 }
 
 antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {
@@ -199,13 +199,13 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 	}
 	else if (ctx->exprM()) {
 		return visitExprM(ctx->exprM());
-	}	
-	else if (ctx->command()) {
-		cout << "command detected" << endl;
-		return visitCommand(ctx->command());
 	}
-	else {
-		return visitChildren(ctx);
+	else if(ctx->command()){ //User is trying to run a command
+		/*
+		There is a problem with command context. If the command is NOT echo, ctx->command() is nullptr. StatContext also does not have a string so 
+		we cannot parse the string and do something from there.
+		*/
+		return visitCommand(ctx->command()); //User is running a known command
 	}
 }
 
