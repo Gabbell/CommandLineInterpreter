@@ -10,6 +10,9 @@ class Visitor : public cliParserBaseVisitor
 {
 private:
 	CommandLineInterpreter* cli;
+
+	template<typename T>
+	bool instanceOf(tree::ParseTree* ctx) const;
 public:
 	Visitor(CommandLineInterpreter* cli);
 	~Visitor();

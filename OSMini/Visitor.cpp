@@ -14,12 +14,28 @@ Visitor::~Visitor()
 {
 }
 
+template<typename T>
+bool Visitor::instanceOf(tree::ParseTree* ctx) const {
+	return dynamic_cast<T*>(ctx);
+}
+
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
-	if (ctx->ECHO()) { //user is running echo command
-		vector<string> args;
-		for (cliParserParser::VaridContext* varid : ctx->varid()) {
-			args.push_back(visitVarid(varid));
+	// Visit arguments
+	vector<string> args;
+	for (tree::ParseTree* child : ctx->children) {
+		if (instanceOf<cliParserParser::VaridContext>(child)) {
+			args.push_back(visitVarid((cliParserParser::VaridContext*)child));
 		}
+		else if (instanceOf<cliParserParser::ExprMContext>(child)) {
+			int value = visitExprM((cliParserParser::ExprMContext*)child);
+			args.push_back(to_string(value));
+		}
+		else if (instanceOf<cliParserParser::StatContext>(child)) {
+			visitStat((cliParserParser::StatContext*)child);
+		}
+	}
+	
+	if (ctx->ECHO()) { //user is running echo command
 		cout << "user is running echo" << endl;
 		cli->executeCommand("echo", args);
 	}
