@@ -14,23 +14,39 @@ Visitor::~Visitor()
 {
 }
 
+template<typename T>
+bool Visitor::instanceOf(tree::ParseTree* ctx) const {
+	return dynamic_cast<T*>(ctx);
+}
+
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
-	if (ctx->ECHO()) { //user is running known command (echo)
-		vector<string> args;
-		for (cliParserParser::VaridContext* varid : ctx->varid()) {
-			args.push_back(visitVarid(varid));
+	// Visit arguments
+	vector<string> args;
+	for (tree::ParseTree* child : ctx->children) {
+		if (instanceOf<cliParserParser::VaridContext>(child)) {
+			args.push_back(visitVarid((cliParserParser::VaridContext*)child));
 		}
+		else if (instanceOf<cliParserParser::ExprMContext>(child)) {
+			int value = visitExprM((cliParserParser::ExprMContext*)child);
+			args.push_back(to_string(value));
+		}
+		else if (instanceOf<cliParserParser::StatContext>(child)) {
+			visitStat((cliParserParser::StatContext*)child);
+		}
+	}
+	
+	if (ctx->ECHO()) { //user is running echo command
+		cout << "user is running echo" << endl;
 		cli->executeCommand("echo", args);
 	}
 	else { //user is trying to run an executable
 		if (ctx->BACKGrnd()) {
-			cout << "user running executable in background" << endl;
 			//run command in background
 		}
 		else {
-			cout << "user is running an executable" << endl;
 			//run command in foreground
 		}
+		cout << "user is running an executable" << endl;
 	}
 	return antlrcpp::Any();
 }
@@ -45,7 +61,7 @@ antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
 
 	cli->addVariable(varId, stat);
 
-	return antlrcpp::Any();
+	return NULL;
 }
 
 antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {
@@ -199,13 +215,13 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 	}
 	else if (ctx->exprM()) {
 		return visitExprM(ctx->exprM());
+	}	
+	else if (ctx->command()) {
+		cout << "command detected" << endl;
+		return visitCommand(ctx->command());
 	}
-	else if(ctx->command()){ //User is trying to run a command
-		/*
-		There is a problem with command context. If the command is NOT echo, ctx->command() is nullptr. StatContext also does not have a string so 
-		we cannot parse the string and do something from there.
-		*/
-		return visitCommand(ctx->command()); //User is running a known command
+	else {
+		return visitChildren(ctx);
 	}
 }
 
