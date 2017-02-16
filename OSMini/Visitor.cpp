@@ -3,6 +3,7 @@
 #include "CommandLineInterpreter.h"
 
 #include <iostream>
+#include <windows.h>
 
 using namespace std;
 
@@ -88,14 +89,27 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 		cli->executeCommand("echo", args);
 	}
 	else { //user is trying to run an executable
+		string expression = visitString(ctx->string());
+		expression = expression.substr(1, expression.length() - 2);
+		expression.append(".exe");
+		STARTUPINFO info = { sizeof(info) };
+		PROCESS_INFORMATION processInfo;
+
 		if (ctx->BACKGrnd()) {
 			cout << "BACKGROUND MODE ENGAGED" << endl;
+			CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo);
 			//run command in background
 		}
 		else {
+			cout << "FOREGROUND MODE ENGAGED" << endl;
+			if (CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo))
+			{
+				WaitForSingleObject(processInfo.hProcess, INFINITE);
+				CloseHandle(processInfo.hProcess);
+				CloseHandle(processInfo.hThread);
+			}
 			//run command in foreground
 		}
-		cout << "user is running an executable" << endl;
 	}
 	return antlrcpp::Any();
 }
@@ -105,12 +119,14 @@ antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
-	string varId = visitVarid(ctx->varid());		
-	antlrcpp::Any stat = visitStat(ctx->stat());
+	if (ctx->getText().find(":=") >= 1) {
+		string varId = visitVarid(ctx->varid());
+		antlrcpp::Any stat = visitStat(ctx->stat());
 
-	cli->addVariable(varId, stat);
+		cli->addVariable(varId, stat);
+	}
 
-	return NULL;
+	return antlrcpp::Any();
 }
 
 antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {
