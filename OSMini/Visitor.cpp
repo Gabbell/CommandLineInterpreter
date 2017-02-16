@@ -229,7 +229,7 @@ antlrcpp::Any Visitor::visitBlockstat(cliParserParser::BlockstatContext *ctx) {
 	for (int i = 0; i < ctx->stat().size(); i++) {
 		visitStat(ctx->stat(i));
 	}
-	return visitChildren(ctx);
+	return antlrcpp::Any();
 }
 
 
