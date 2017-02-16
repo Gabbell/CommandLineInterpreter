@@ -10,13 +10,11 @@ class Visitor : public cliParserBaseVisitor
 {
 private:
 	CommandLineInterpreter* cli;
-
-	template<typename T>
-	bool instanceOf(tree::ParseTree* ctx) const;
 public:
 	Visitor(CommandLineInterpreter* cli);
 	~Visitor();
 
+	virtual antlrcpp::Any visitRedir(cliParserParser::RedirContext *ctx);
 	virtual antlrcpp::Any visitCommand(cliParserParser::CommandContext * ctx);
 	virtual antlrcpp::Any visitExprM(cliParserParser::ExprMContext *ctx);
 	virtual antlrcpp::Any visitComparM(cliParserParser::ComparMContext *ctx);

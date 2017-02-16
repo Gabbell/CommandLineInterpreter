@@ -15,28 +15,76 @@ Visitor::~Visitor()
 }
 
 template<typename T>
-bool Visitor::instanceOf(tree::ParseTree* ctx) const {
+bool instanceOf(tree::ParseTree* ctx) {
 	return dynamic_cast<T*>(ctx);
 }
 
+antlrcpp::Any Visitor::visitRedir(cliParserParser::RedirContext *ctx) {
+	if (ctx->RED()) {
+		return antlrcpp::Any(">");
+	}
+	else {
+		return antlrcpp::Any(">>");
+	}
+}
+
 antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
+	// Should redirect
+	bool redirect = (ctx->RED() || ctx->REDD());
+	bool append = (ctx->REDD());
+
+	// Nasty hack to make varid work for redirection
+	size_t numVarid = ctx->varid().size();
+	size_t currentNumVarid = 1;
+	string redirectPath;
+
 	// Visit arguments
 	vector<string> args;
 	for (tree::ParseTree* child : ctx->children) {
 		if (instanceOf<cliParserParser::VaridContext>(child)) {
-			args.push_back(visitVarid((cliParserParser::VaridContext*)child));
+			if (currentNumVarid >= numVarid && redirect) {
+				// This is the last varid and there is a redirect so we will use it as the path
+				redirectPath = visitVarid((cliParserParser::VaridContext*)child).as<string>();
+				break;
+			}
+			
+			string varId = visitVarid((cliParserParser::VaridContext*)child);
+			antlrcpp::Any any = cli->getVariable(varId);
+
+			if (any.is<string>()) {
+				args.push_back(any);
+			}
+			else if (any.is<int>()) {
+				args.push_back(to_string((int)any));
+			}
+			else if (any.is<bool>()) {
+				args.push_back(to_string((bool)any));
+			}
+
+			currentNumVarid++;
 		}
 		else if (instanceOf<cliParserParser::ExprMContext>(child)) {
 			int value = visitExprM((cliParserParser::ExprMContext*)child);
 			args.push_back(to_string(value));
 		}
 		else if (instanceOf<cliParserParser::StatContext>(child)) {
-			visitStat((cliParserParser::StatContext*)child);
+			antlrcpp::Any any = visitStat((cliParserParser::StatContext*)child);
+
+			if (any.is<string>()) {
+				args.push_back(any);
+			}
+			else if (any.is<int>()) {
+				args.push_back(to_string((int)any));
+			}
+			else if (any.is<bool>()) {
+				args.push_back(to_string((bool)any));
+			}
 		}
 	}
 	
 	if (ctx->ECHO()) { //user is running echo command
 		cout << "user is running echo" << endl;
+		cout << "REDIRECT PATH: " << redirectPath << endl;
 		cli->executeCommand("echo", args);
 	}
 	else { //user is trying to run an executable
