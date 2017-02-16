@@ -89,6 +89,7 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 	}
 	else { //user is trying to run an executable
 		if (ctx->BACKGrnd()) {
+			cout << "BACKGROUND MODE ENGAGED" << endl;
 			//run command in background
 		}
 		else {

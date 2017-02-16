@@ -76,7 +76,14 @@ void CommandLineInterpreter::addVariable(const std::string& varId, antlrcpp::Any
 }
 
 antlrcpp::Any CommandLineInterpreter::getVariable(std::string& varId) const {
-	return variables.at(varId);
+	map<string,antlrcpp::Any>::const_iterator iter = variables.find(varId);
+	if (iter == variables.end()) {
+		cout << "Variable " << varId << " does not exist!" << endl;
+		return antlrcpp::Any();
+	}
+	else {
+		return variables.at(varId);
+	}
 }
 
 int CommandLineInterpreter::executeCommand(const std::string& cmd, const vector<std::string>& args) {
