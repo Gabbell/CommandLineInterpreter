@@ -227,8 +227,9 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 
 antlrcpp::Any Visitor::visitBlockstat(cliParserParser::BlockstatContext *ctx) {
 	for (int i = 0; i < ctx->stat().size(); i++) {
-		return visitStat(ctx->stat(i));
+		visitStat(ctx->stat(i));
 	}
+	return visitChildren(ctx);
 }
 
 
@@ -263,8 +264,9 @@ antlrcpp::Any Visitor::visitWhilestat(cliParserParser::WhilestatContext *ctx) {
 		}
 	}
 	while (value) {
-		return visitBlockstat(ctx->blockstat());
+		visitBlockstat(ctx->blockstat());
 	}
+	return visitChildren(ctx);
 }
 
 antlrcpp::Any Visitor::visitBool_(cliParserParser::Bool_Context *ctx) {
