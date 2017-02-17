@@ -49,6 +49,10 @@ int CommandLineInterpreter::run() {
 			break;
 		}
 
+		if (input.empty()) {
+			continue;
+		}
+
 		ANTLRInputStream stream(input);
 		cliParserLexer lexer(&stream);
 		CommonTokenStream tokens(&lexer);
@@ -60,10 +64,6 @@ int CommandLineInterpreter::run() {
 		Visitor visitor(this);
 
 		antlrcpp::Any finalResult = visitor.visit(tree);
-
-		if (finalResult.isNotNull() && finalResult.is<int>()) {
-			cout << ((int)finalResult) << endl;
-		}
 
 	}
 
