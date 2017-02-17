@@ -9,6 +9,7 @@
 
 #include "Commands.h"
 
+#include <fstream>
 #include <windows.h>
 
 using namespace std;
@@ -22,6 +23,8 @@ CommandLineInterpreter::CommandLineInterpreter() : closed(false)
 
 	currentDirectory = string(buffer);
 
+	path = string(currentDirectory);
+	path.append("\\path");
 	// Map commands
 	cmds["echo"] = &echo;
 }
@@ -86,6 +89,31 @@ antlrcpp::Any CommandLineInterpreter::getVariable(std::string& varId) const {
 	}
 }
 
-int CommandLineInterpreter::executeCommand(const std::string& cmd, const vector<std::string>& args) {
-	return cmds.at(cmd)(args);
+string CommandLineInterpreter::executeCommand(const string& cmd, const vector<string>& args, bool redirected) {
+	return cmds.at(cmd)(args, redirected);
+}
+
+void CommandLineInterpreter::outputToFile(const string& filePath, const string& output, bool append) const {
+
+	ofstream ofs;
+
+	if (append) {
+		ofs.open(filePath, std::ofstream::out | std::ofstream::app);
+	}
+	else {
+		ofs.open(filePath);
+	}
+
+	if (ofs) {
+		ofs << output;
+	}
+	else {
+		cout << "Failed redirect output to file " << filePath << endl;
+	}
+
+	ofs.close();
+}
+
+std::string CommandLineInterpreter::getPath() const {
+	return path;
 }

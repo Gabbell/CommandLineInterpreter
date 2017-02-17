@@ -4,6 +4,6 @@
 #include <vector>
 #include <string>
 
-int echo(const std::vector<std::string>& args);
+std::string echo(const std::vector<std::string>& args, bool redirected);
 
 #endif

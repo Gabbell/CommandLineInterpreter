@@ -38,6 +38,7 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 	size_t numVarid = ctx->varid().size();
 	size_t currentNumVarid = 1;
 	string redirectPath;
+	string redirOutput;
 
 	// Visit arguments
 	vector<string> args;
@@ -83,32 +84,70 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 		}
 	}
 	
+	// Check if internal command
 	if (ctx->ECHO()) { //user is running echo command
-		cout << "user is running echo" << endl;
-		cout << "REDIRECT PATH: " << redirectPath << endl;
-		cli->executeCommand("echo", args);
+		redirOutput = cli->executeCommand("echo", args, redirect);
 	}
-	else { //user is trying to run an executable
+	else { 
+		//user is trying to run an executable
 		string expression = visitString(ctx->string());
 		expression = expression.substr(1, expression.length() - 2);
 		expression.append(".exe");
+
+		// Try to run as included executable
 		STARTUPINFO info = { sizeof(info) };
 		PROCESS_INFORMATION processInfo;
+		BOOL success = FALSE;
+		string included(cli->getPath());
+		included.append("\\");
+		included.append(expression);
+
 
 		if (ctx->BACKGrnd()) {
 			//run command in background
-			CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &info, &processInfo);
+			success = CreateProcess(NULL, const_cast<char *>(included.c_str()), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &info, &processInfo);
 		}
 		else {
 			//run command in foreground
-			if (CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &processInfo))
+			success = CreateProcess(NULL, const_cast<char *>(included.c_str()), NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &processInfo);
+			if (success)
 			{
 				WaitForSingleObject(processInfo.hProcess, INFINITE);
 				CloseHandle(processInfo.hProcess);
 				CloseHandle(processInfo.hThread);
 			}
 		}
+
+		// If I did not find anything in the included path then treat as external executable
+		if (!success) {
+			info = { sizeof(info) };
+			processInfo = PROCESS_INFORMATION();
+
+			if (ctx->BACKGrnd()) {
+				//run command in background
+				success = CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &info, &processInfo);
+			}
+			else {
+				//run command in foreground
+				success = CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &processInfo);
+				if (success)
+				{
+					WaitForSingleObject(processInfo.hProcess, INFINITE);
+					CloseHandle(processInfo.hProcess);
+					CloseHandle(processInfo.hThread);
+				}
+			}
+		}
+
+		if (!success) {
+			cout << "Failed to execute command " << expression << endl;
+		}
 	}
+
+	if (redirect) {
+		cli->outputToFile(redirectPath, redirOutput, append);
+	}
+
 	return antlrcpp::Any();
 }
 
@@ -210,11 +249,9 @@ antlrcpp::Any Visitor::visitComparS(cliParserParser::ComparSContext *ctx) {
 	string expr2 = visitString(ctx->string(1));
 
 	if (expr1 == expr2) {
-		cout << "String equal" << endl;
 		return true;
 	}
 	else {
-		cout << "String not equal" << endl;
 		return false;
 	}
 }
@@ -224,11 +261,9 @@ antlrcpp::Any Visitor::visitComparM(cliParserParser::ComparMContext *ctx) {
 	int expr2 = visitExprM(ctx->exprM(1));
 
 	if (expr1 == expr2) {
-		cout << "Expression equal" << endl;
 		return true;
 	}
 	else {
-		cout << "Expression not equal" << endl;
 		return false;
 	}
 }
@@ -244,11 +279,9 @@ antlrcpp::Any Visitor::visitCompar(cliParserParser::ComparContext *ctx) {
 	}
 
 	if (doublequotes % 2 == 0 && doublequotes > 3) {
-		cout << "going through comparS" << endl;
 		return visitComparS(ctx->comparS());
 	}
 	else if(doublequotes == 0) {
-		cout << "going through comparM" << endl;
 		return visitComparM(ctx->comparM());
 	}
 }
@@ -280,7 +313,6 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 		return visitExprM(ctx->exprM());
 	}	
 	else if (ctx->command()) {
-		cout << "command detected" << endl;
 		return visitCommand(ctx->command());
 	}
 	else {
