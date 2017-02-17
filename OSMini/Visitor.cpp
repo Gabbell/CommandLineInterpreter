@@ -156,7 +156,7 @@ antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
-	if (ctx->getText().find(":=") == 1) {
+	if (ctx->getText().find(":=") != string::npos) {
 		string varId = visitVarid(ctx->varid());
 		antlrcpp::Any stat = visitStat(ctx->stat());
 
