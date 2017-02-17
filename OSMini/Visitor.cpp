@@ -15,9 +15,11 @@ Visitor::~Visitor()
 {
 }
 
+// Helper function to simulate an instanceOf operator similar to java
+// We need this to work around issues with the grammar file
 template<typename T>
 bool instanceOf(tree::ParseTree* ctx) {
-	return dynamic_cast<T*>(ctx);
+	return dynamic_cast<T*>(ctx); // dynamic_cast will return nullptr if it fails to cast something to a ptr type
 }
 
 antlrcpp::Any Visitor::visitRedir(cliParserParser::RedirContext *ctx) {
@@ -43,6 +45,8 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 	// Visit arguments
 	vector<string> args;
 	for (tree::ParseTree* child : ctx->children) {
+		// Loop through all the children and try to indentify their types and visit them
+		// This is the only way to properly keep the order of the arguments with the current grammar file
 		if (instanceOf<cliParserParser::VaridContext>(child)) {
 			if (currentNumVarid >= numVarid && redirect) {
 				// This is the last varid and there is a redirect so we will use it as the path
@@ -53,6 +57,7 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 			string varId = visitVarid((cliParserParser::VaridContext*)child);
 			antlrcpp::Any any = cli->getVariable(varId);
 
+			// Convert the data that was stored in the variable to a string
 			if (any.is<string>()) {
 				args.push_back(any);
 			}
@@ -66,12 +71,14 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 			currentNumVarid++;
 		}
 		else if (instanceOf<cliParserParser::ExprMContext>(child)) {
+			// ExprM always returns an int so this is pretty straight forward
 			int value = visitExprM((cliParserParser::ExprMContext*)child);
 			args.push_back(to_string(value));
 		}
 		else if (instanceOf<cliParserParser::StatContext>(child)) {
 			antlrcpp::Any any = visitStat((cliParserParser::StatContext*)child);
 
+			// Convert data returned from stat to string
 			if (any.is<string>()) {
 				args.push_back(any);
 			}
@@ -85,20 +92,21 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 	}
 	
 	// Check if internal command
+	// ECHO is the only internal command for now
 	if (ctx->ECHO()) { //user is running echo command
 		redirOutput = cli->executeCommand("echo", args, redirect);
 	}
 	else { 
 		//user is trying to run an executable
 		string expression = visitString(ctx->string());
-		expression = expression.substr(1, expression.length() - 2);
+		expression = expression.substr(1, expression.length() - 2); // String voodoo
 		expression.append(".exe");
 
 		// Try to run as included executable
 		STARTUPINFO info = { sizeof(info) };
 		PROCESS_INFORMATION processInfo;
 		BOOL success = FALSE;
-		string included(cli->getPath());
+		string included(cli->getPath()); // More string voodoo
 		included.append("\\");
 		included.append(expression);
 
@@ -152,7 +160,7 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitVarid(cliParserParser::VaridContext *ctx) {
-	return ctx->getText();
+	return ctx->getText(); // Pretty boring
 }
 
 antlrcpp::Any Visitor::visitAssgnmnt(cliParserParser::AssgnmntContext *ctx) {
@@ -170,7 +178,7 @@ antlrcpp::Any Visitor::visitLogicops(cliParserParser::LogicopsContext *ctx) {
 	// Assume it is an AND
 	char op = 'a';
 
-	// If OR() does not return null then it was actually an OR
+	// If OR() does not return nullptr then it was actually an OR
 	if (ctx->OR()) {
 		op = 'o';
 	}
@@ -225,6 +233,8 @@ antlrcpp::Any Visitor::visitTerm(cliParserParser::TermContext *ctx) {
 
 antlrcpp::Any Visitor::visitFactor(cliParserParser::FactorContext *ctx) {
 	string expression = ctx->NUMBER()->getText();
+	
+	// Check if factor is actually a number
 	bool isNumber = true;
 	for (int i = 0; i < expression.length(); i++) {
 		if (!isdigit(expression[i])) {
@@ -235,13 +245,13 @@ antlrcpp::Any Visitor::visitFactor(cliParserParser::FactorContext *ctx) {
 		int value = stoi(ctx->NUMBER()->getText());
 		return antlrcpp::Any(value);
 	}
+
 	return visitChildren(ctx);
 }
 
 
 antlrcpp::Any Visitor::visitString(cliParserParser::StringContext *ctx) {
-	string value = ctx->getText();
-	return value;
+	return ctx->getText();
 }
 
 antlrcpp::Any Visitor::visitComparS(cliParserParser::ComparSContext *ctx) {
@@ -271,22 +281,24 @@ antlrcpp::Any Visitor::visitComparM(cliParserParser::ComparMContext *ctx) {
 antlrcpp::Any Visitor::visitCompar(cliParserParser::ComparContext *ctx) {
 	int doublequotes = 0;
 	string expression = ctx->getText();
+	// Check for double quotes
 	for (int i = 0; i < expression.length(); i++) {
 		char currentchar = expression[i];
 		if (currentchar == '"') {
 			doublequotes++;
 		}
 	}
-
-	if (doublequotes % 2 == 0 && doublequotes > 3) {
+	// If there are double quotes then we know its a string compare
+	if (doublequotes % 2 == 0 && doublequotes > 3) { // Double quotes voodoo
 		return visitComparS(ctx->comparS());
 	}
-	else if(doublequotes == 0) {
+	else if(doublequotes == 0) { // Else its just a number compare
 		return visitComparM(ctx->comparM());
 	}
 }
 
 antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
+	// Just visit stuff
 	if (ctx->ifstat()) {
 		return visitIfstat(ctx->ifstat());
 	}
@@ -321,6 +333,7 @@ antlrcpp::Any Visitor::visitStat(cliParserParser::StatContext *ctx) {
 }
 
 antlrcpp::Any Visitor::visitBlockstat(cliParserParser::BlockstatContext *ctx) {
+	// Visit all the statements
 	for (int i = 0; i < ctx->stat().size(); i++) {
 		visitStat(ctx->stat(i));
 	}

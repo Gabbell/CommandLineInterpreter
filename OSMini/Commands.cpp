@@ -5,6 +5,8 @@
 
 using namespace std;
 
+// CPP file containing all the internal commands
+
 string echo(const vector<string>& args, bool redirected) {
 	if (redirected) {
 		stringstream ss;

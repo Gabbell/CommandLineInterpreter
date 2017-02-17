@@ -18,16 +18,10 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cliParserBaseListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cliParserBaseVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cliParserLexer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cliParserListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cliParserParser.cpp">
@@ -45,22 +39,22 @@
     <ClCompile Include="Commands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cliParserBaseListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cliParserListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cliParser.tokens" />
     <None Include="cliParserLexer.tokens" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cliParserBaseListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cliParserBaseVisitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cliParserLexer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cliParserListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cliParserParser.h">
@@ -76,6 +70,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cliParserBaseListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cliParserListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

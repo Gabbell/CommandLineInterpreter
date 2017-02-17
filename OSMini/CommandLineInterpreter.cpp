@@ -16,6 +16,7 @@ using namespace std;
 
 CommandLineInterpreter::CommandLineInterpreter() : closed(false)
 {
+	// Get working directory
 	const DWORD bufferSize = 512;
 	TCHAR buffer[bufferSize];
 
@@ -23,8 +24,10 @@ CommandLineInterpreter::CommandLineInterpreter() : closed(false)
 
 	currentDirectory = string(buffer);
 
+	// Get simulated path folder
 	path = string(currentDirectory);
 	path.append("\\path");
+	
 	// Map commands
 	cmds["echo"] = &echo;
 }
@@ -41,29 +44,32 @@ int CommandLineInterpreter::run() {
 	while (!closed) {
 		cout << currentDirectory << ">";
 		
+		// Get input from the user
 		string input;
 		getline(cin, input);
 
-		// Temp exit
+		// handle exit
 		if (input == "exit") {
 			break;
 		}
 
+		// Handle empty string
 		if (input.empty()) {
 			continue;
 		}
 
+		// Parse input
 		ANTLRInputStream stream(input);
 		cliParserLexer lexer(&stream);
 		CommonTokenStream tokens(&lexer);
 		cliParserParser parser(&tokens);
 
-		//Ref<tree::ParseTree> tree = Ref<tree::ParseTree>(parser.blockstat());
 		tree::ParseTree* tree = parser.blockstat();
 
 		Visitor visitor(this);
 
-		antlrcpp::Any finalResult = visitor.visit(tree);
+		// Visit top of parse tree
+		visitor.visit(tree);
 
 	}
 
@@ -80,6 +86,8 @@ void CommandLineInterpreter::addVariable(const std::string& varId, antlrcpp::Any
 
 antlrcpp::Any CommandLineInterpreter::getVariable(std::string& varId) const {
 	map<string,antlrcpp::Any>::const_iterator iter = variables.find(varId);
+	
+	// Check if variable actually exists in our map
 	if (iter == variables.end()) {
 		cout << "Variable " << varId << " does not exist!" << endl;
 		return antlrcpp::Any();
