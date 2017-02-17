@@ -96,19 +96,17 @@ antlrcpp::Any Visitor::visitCommand(cliParserParser::CommandContext *ctx) {
 		PROCESS_INFORMATION processInfo;
 
 		if (ctx->BACKGrnd()) {
-			cout << "BACKGROUND MODE ENGAGED" << endl;
-			CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo);
 			//run command in background
+			CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &info, &processInfo);
 		}
 		else {
-			cout << "FOREGROUND MODE ENGAGED" << endl;
-			if (CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo))
+			//run command in foreground
+			if (CreateProcess(NULL, const_cast<char *>(expression.c_str()), NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &processInfo))
 			{
 				WaitForSingleObject(processInfo.hProcess, INFINITE);
 				CloseHandle(processInfo.hProcess);
 				CloseHandle(processInfo.hThread);
 			}
-			//run command in foreground
 		}
 	}
 	return antlrcpp::Any();
